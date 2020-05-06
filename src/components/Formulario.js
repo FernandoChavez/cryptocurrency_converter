@@ -1,8 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import styled from '@emotion/styled';
+import Error from './Error';
 import useMoneda from '../hooks/useMoneda';
 import useCriptomoneda from '../hooks/useCriptomoneda';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 
 const Boton = styled.input`
     margin-top: 20px;
@@ -22,7 +24,7 @@ const Boton = styled.input`
     }
 `
 
-const Formulario = () => {
+const Formulario = ({guardarMoneda, guardarCriptomoneda}) => {
 
     // state del listado de criptomonedas
     const [ listacripto, guardarCriptomonedas ] = useState([]);
@@ -69,7 +71,7 @@ const Formulario = () => {
         e.preventDefault();
 
         // validar si ambos campos estan llenos
-        if(moneda == '' || criptomoneda == ''){
+        if(moneda === '' || criptomoneda === ''){
             guardarError(true);
             return;
             
@@ -77,13 +79,15 @@ const Formulario = () => {
 
         // pasar los datos al componente principal
         guardarError(false);
+        guardarMoneda(moneda);
+        guardarCriptomoneda(criptomoneda);
     }
 
     return (
         <form
             onSubmit={cotizarMoneda}
         >
-                {error ? 'Hay un error': null}
+                {error ? <Error mensaje="Todos los campos son obligatorios"/>: null}
 
             <SelectMonedas/>
             <SelectCripto/>
@@ -97,5 +101,12 @@ const Formulario = () => {
 
     );
 }
+
+
+Formulario.propTypes = {
+    guardarMoneda: PropTypes.func.isRequired,
+    guardarCriptomonedas: PropTypes.array.isRequired
+}
+
 
 export default Formulario;
